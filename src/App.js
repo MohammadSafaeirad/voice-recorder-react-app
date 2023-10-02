@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import React from 'react';
-import VoiceRecorder from './componenets/VoiceRecorder';
+import VoiceRecorder from './components/VoiceRecorder';
 
 function App() {
   return (
