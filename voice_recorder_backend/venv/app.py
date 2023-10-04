@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -21,9 +23,14 @@ def upload_file():
     file = request.files['file']
     if file.filename == '':
         return jsonify(message='No selected file'), 400
+
     if file and allowed_file(file.filename):
-        filename = os.path.join(UPLOAD_FOLDER, file.filename)
-        file.save(filename)
+        securename = secure_filename(file.filename)
+        # Append current timestamp to filename to make it unique
+        filename_without_ext, file_extension = os.path.splitext(securename)
+        unique_filename = f"{filename_without_ext}_{datetime.now().strftime('%Y%m%d%H%M%S')}{file_extension}"
+        filepath = os.path.join(UPLOAD_FOLDER, unique_filename)
+        file.save(filepath)
         return jsonify(message='File successfully uploaded'), 200
     else:
         return jsonify(message='File type not allowed'), 400
